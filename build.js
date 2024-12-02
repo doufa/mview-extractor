@@ -74,7 +74,8 @@ const filesToCopy = [
     'extension/popup.html',
     'extension/icons/icon16.png',
     'extension/icons/icon48.png',
-    'extension/icons/icon128.png'
+    'extension/icons/icon128.png',
+    'extension/icons/bmc-logo.svg',
 ];
 
 filesToCopy.forEach(file => {
