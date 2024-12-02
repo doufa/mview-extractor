@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base cube -->
+  <path d="M64 16L16 44v48l48 28 48-28V44L64 16z" 
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="4"/>
+  
+  <!-- Front face highlight -->
+  <path d="M64 120V72L16 44v48l48 28z" 
+        fill="#388E3C" stroke="#2E7D32" stroke-width="4"/>
+  
+  <!-- Right face highlight -->
+  <path d="M112 92V44L64 72v48l48-28z" 
+        fill="#43A047" stroke="#2E7D32" stroke-width="4"/>
+  
+  <!-- Download arrow -->
+  <path d="M64 40v32l-12-12M64 72l12-12M52 80h24" 
+        fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
