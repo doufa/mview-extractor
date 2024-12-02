@@ -77,12 +77,33 @@
       border-radius: 8px;
       font-size: 14px;
     }
+    .coffee-container {
+      text-align: center;
+      margin: 10px 0;
+      padding: 5px;
+    }
+    .coffee-button {
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    .coffee-button:hover {
+      transform: scale(1.05);
+    }
+    .coffee-button img {
+      height: 40px;
+      width: auto;
+    }
   </style>
 </head>
 <body>
   <h2>3D Model Detector</h2>
   <div id="modelList" class="model-list">
     <div class="no-models">No 3D models detected on this page</div>
+  </div>
+  <div class="coffee-container">
+    <a href="https://www.buymeacoffee.com/doufa" target="_blank" class="coffee-button">
+      <img src="icons/bmc-logo.svg" alt="Buy Me A Coffee">
+    </a>
   </div>
   <script src="popup.js"></script>
 </body>
