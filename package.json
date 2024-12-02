@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Browser extension for extracting and downloading MView files",
   "scripts": {
-    "build": "node build.js",
-    "package": "cd dist && zip -r ../mview-extractor.zip extension/*"
+    "build": "node scripts/build.js",
+    "package": "node scripts/package.js"
   },
   "dependencies": {
-    "javascript-obfuscator": "^4.1.0"
+    "javascript-obfuscator": "^4.1.0",
+    "archiver": "^5.3.1"
   }
 }
