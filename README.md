@@ -86,6 +86,14 @@ This project builds upon the work done in [mviewer](https://github.com/majimboo/
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Support the Project
+
+If you find this project helpful, consider buying me a coffee! ☕
+
+<a href="https://www.buymeacoffee.com/doufa" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50">
+</a>
+
 ## License
 
 MIT License
