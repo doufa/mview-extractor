@@ -1,33 +1,25 @@
-const JavaScriptObfuscator = require('javascript-obfuscator');
+const { minify } = require('terser');
 const fs = require('fs');
 const path = require('path');
 
-// Configuration for obfuscation
-const obfuscatorConfig = {
-    compact: true,
-    controlFlowFlattening: false,
-    deadCodeInjection: false,
-    debugProtection: false,
-    debugProtectionInterval: 2000,
-    disableConsoleOutput: false,
-    identifierNamesGenerator: 'hexadecimal',
-    log: false,
-    numbersToExpressions: true,
-    renameGlobals: false,
-    rotateStringArray: true,
-    selfDefending: false,
-    shuffleStringArray: true,
-    splitStrings: true,
-    stringArray: true,
-    stringArrayEncoding: ['base64'],
-    stringArrayThreshold: 0.75,
-    transformObjectKeys: false,
-    unicodeEscapeSequence: false,
-    reservedNames: ['chrome', 'self']
+// Configuration for minification
+const minifyConfig = {
+    compress: {
+        dead_code: true,
+        drop_console: false,
+        drop_debugger: true,
+        passes: 2
+    },
+    mangle: {
+        reserved: ['chrome', 'self']
+    },
+    format: {
+        comments: false
+    }
 };
 
-// Files to obfuscate (only obfuscate library files that contain sensitive logic)
-const filesToObfuscate = [
+// Files to minify
+const filesToMinify = [
     'extension/lib/binary-reader.js',
     'extension/lib/FileProcessor.js',
     'extension/lib/jszip.min.js',
@@ -39,34 +31,35 @@ const filesToObfuscate = [
 
 // Create dist directory
 const distDir = path.join(__dirname, 'dist');
-if (!fs.existsSync(distDir)) {
-    fs.mkdirSync(distDir);
-}
-
-// Create extension directory in dist
 const distExtDir = path.join(distDir, 'extension');
-if (!fs.existsSync(distExtDir)) {
-    fs.mkdirSync(distExtDir);
-}
-
 const distLibDir = path.join(distExtDir, 'lib');
-if (!fs.existsSync(distLibDir)) {
-    fs.mkdirSync(distLibDir);
-}
-
 const distIconsDir = path.join(distExtDir, 'icons');
-if (!fs.existsSync(distIconsDir)) {
-    fs.mkdirSync(distIconsDir);
+
+// Function to clear directory recursively
+function clearDirectory(directory) {
+    if (fs.existsSync(directory)) {
+        fs.readdirSync(directory).forEach((file) => {
+            const currentPath = path.join(directory, file);
+            if (fs.lstatSync(currentPath).isDirectory()) {
+                clearDirectory(currentPath);
+                fs.rmdirSync(currentPath);
+            } else {
+                fs.unlinkSync(currentPath);
+            }
+        });
+    }
 }
 
-// Copy and obfuscate files
-filesToObfuscate.forEach(file => {
-    const sourceCode = fs.readFileSync(path.join(__dirname, file), 'utf8');
-    const obfuscatedCode = JavaScriptObfuscator.obfuscate(sourceCode, obfuscatorConfig).getObfuscatedCode();
-    
-    const distPath = path.join(distDir, file);
-    fs.writeFileSync(distPath, obfuscatedCode);
-});
+// Copy and minify files
+async function processFiles() {
+    for (const file of filesToMinify) {
+        const sourceCode = fs.readFileSync(path.join(__dirname, file), 'utf8');
+        const minified = await minify(sourceCode, minifyConfig);
+        
+        const distPath = path.join(distDir, file);
+        fs.writeFileSync(distPath, minified.code);
+    }
+}
 
 // Copy other necessary files (manifest.json, images, CSS, etc.)
 const filesToCopy = [
@@ -74,15 +67,34 @@ const filesToCopy = [
     'extension/popup.html',
     'extension/icons/icon16.png',
     'extension/icons/icon48.png',
-    'extension/icons/icon128.png',
-    'extension/icons/bmc-logo.svg',
+    'extension/icons/icon128.png'
 ];
 
-filesToCopy.forEach(file => {
-    const sourcePath = path.join(__dirname, file);
-    const distPath = path.join(distDir, file);
-    
-    if (fs.existsSync(sourcePath)) {
-        fs.copyFileSync(sourcePath, distPath);
-    }
-});
+// Main build process
+async function build() {
+    // Clear dist directory if it exists
+    clearDirectory(distDir);
+
+    // Create directories
+    [distDir, distExtDir, distLibDir, distIconsDir].forEach(dir => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+    });
+
+    // Process files
+    await processFiles();
+
+    // Copy static files
+    filesToCopy.forEach(file => {
+        const sourcePath = path.join(__dirname, file);
+        const distPath = path.join(distDir, file);
+        
+        if (fs.existsSync(sourcePath)) {
+            fs.copyFileSync(sourcePath, distPath);
+        }
+    });
+}
+
+// Run the build
+build().catch(console.error);

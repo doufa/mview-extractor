@@ -7,7 +7,9 @@
     "package": "node package.js"
   },
   "dependencies": {
-    "javascript-obfuscator": "^4.1.0",
     "archiver": "^5.3.1"
+  },
+  "devDependencies": {
+    "terser": "^5.36.0"
   }
 }
